@@ -1,6 +1,9 @@
+require("dotenv").config();
 const { REST, Routes } = require("discord.js");
-const { TOKEN, CLIENT_ID } = require("./config.json");
 const { Client, GatewayIntentBits } = require("discord.js");
+
+const TOKEN = process.env.TOKEN;
+const CLIENT_ID = process.env.CLIENT_ID;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -12,6 +15,14 @@ const commands = [
   {
     name: "server",
     description: "Give server name!",
+  },
+  {
+    name: "test",
+    description: "Testing the server!",
+  },
+  {
+    name: "ask",
+    description: "Ask the GPT-4!",
   },
 ];
 
@@ -44,6 +55,14 @@ client.on("interactionCreate", async (interaction) => {
     await interaction.reply(
       `Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`
     );
+  }
+
+  if (interaction.commandName === "test") {
+    await interaction.reply("Testing the server!");
+  }
+
+  if (interaction.commandName === "ask") {
+    await interaction.reply("Ask the GPT-4!");
   }
 });
 
