@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { REST, Routes } = require("discord.js");
 const { Client, GatewayIntentBits } = require("discord.js");
+const logger = require("./logger.js");
 
 const TOKEN = process.env.TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -26,25 +27,33 @@ const commands = [
   },
 ];
 
+if (!TOKEN) {
+  logger.error("TOKEN is not defined in .env file");
+}
 const rest = new REST({ version: "10" }).setToken(TOKEN);
 
 (async () => {
   try {
-    console.log("Started refreshing application (/) commands.");
+    logger.info("Started refreshing application (/) commands.");
+
+    if (!CLIENT_ID) {
+      logger.success("CLIENT_ID is not defined in .env file");
+    }
 
     await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
 
-    console.log("Successfully reloaded application (/) commands.");
+    logger.success("Successfully reloaded application (/) commands.");
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
 })();
 
 client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+  logger.info(`Logged in as ${client.user.tag}!`);
 });
 
 client.on("interactionCreate", async (interaction) => {
+  logger.info(`Interaction received: ${interaction}`);
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === "ping") {
@@ -53,6 +62,9 @@ client.on("interactionCreate", async (interaction) => {
 
   if (interaction.commandName === "server") {
     await interaction.reply(
+      `Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`
+    );
+    logger.info(
       `Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`
     );
   }
