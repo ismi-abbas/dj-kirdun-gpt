@@ -1,14 +1,15 @@
-const { Configuration, OpenAIApi } = require("openai");
-const logger = require("./logger.js");
+import { Configuration, OpenAIApi } from "openai";
+import logger from "./logger.js";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_AI_KEY,
 });
+
 const openai = new OpenAIApi(configuration);
 
-const makeRequest = async (prompt) => {
+const makeRequest = async (prompt: string) => {
   let initial_prompt = [
-    { role: "system", content: "I am a helpful assistant." },
+    { role: "system", content: `You're a helpful assistant` },
   ];
 
   if (prompt) {
@@ -17,10 +18,10 @@ const makeRequest = async (prompt) => {
 
   try {
     const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: initial_prompt,
+      model: "gpt-4",
+      messages: initial_prompt as any,
       temperature: 0.5,
-      max_tokens: 4000,
+      max_tokens: 60,
       top_p: 1.0,
       frequency_penalty: 0.5,
       presence_penalty: 0.0,
@@ -36,4 +37,4 @@ const makeRequest = async (prompt) => {
   }
 };
 
-module.exports = makeRequest;
+export default makeRequest;

@@ -27,6 +27,24 @@ const commands = [
     name: "clear",
     description: "Clear the chat!",
   },
+  {
+    name: "github",
+    description: "Github utility commands",
+    options: [
+      {
+        name: "username",
+        description: "Get GitHub user info",
+        type: 3,
+        required: true,
+      },
+      {
+        name: "repo",
+        description: "Get GitHub repo info",
+        type: 2,
+        required: false,
+      },
+    ],
+  },
 ];
 
-module.exports = commands;
+export default commands;

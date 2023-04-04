@@ -1,9 +1,9 @@
-require("dotenv").config();
-const { REST, Routes } = require("discord.js");
-const { Client, GatewayIntentBits } = require("discord.js");
-const logger = require("./logger.js");
-const makeRequest = require("./gpt.js");
-const commands = require("./command.js");
+import { REST, Routes, Client, GatewayIntentBits } from "discord.js";
+import logger from "./logger.js";
+import makeRequest from "./gpt.js";
+import commands from "./command.js";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const TOKEN = process.env.TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -13,7 +13,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 if (!TOKEN) {
   logger.error("TOKEN is not defined in .env file");
 }
-const rest = new REST({ version: "10" }).setToken(TOKEN);
+const rest = new REST().setToken(TOKEN);
 
 (async () => {
   try {
@@ -44,6 +44,7 @@ client.on("interactionCreate", async (interaction) => {
   if (commandName === "clear") {
     try {
       await interaction.channel.bulkDelete(100);
+      await interaction.reply("Cleared the channel!");
     } catch (error) {
       logger.error(error);
     }
@@ -67,20 +68,28 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (commandName === "ask") {
-    const user = interaction.user;
     const prompt = interaction.options.getString("input");
     try {
-      await interaction.deferReply();
+      await interaction.reply("Fetching data from GPT-4...");
       const response = await makeRequest(prompt);
-
-      logger.info(`Prompt: ${prompt}\n\nResponse: ${response}`);
 
       interaction.editReply({
         content: `Prompt: ${prompt}\n\nResponse: ${response}`,
       });
     } catch (error) {
-      logger.info(error);
+      logger.error(error);
     }
+  }
+
+  if (commandName === "github") {
+    const username = interaction.options.getString("username");
+    await interaction.reply("Fetching data from github...");
+    const data = await fetch(`https://api.github.com/users/${username}`);
+    let answer = await data.json();
+    logger.info(JSON.stringify(answer));
+    await interaction.editReply({
+      content: `Name: ${answer.name}\nUsername: ${answer.login}\nBio: ${answer.bio}\nFollowers: ${answer.followers}\nAvatar: ${answer.avatar_url}`,
+    });
   }
 });
 
