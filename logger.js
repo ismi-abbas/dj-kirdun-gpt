@@ -53,18 +53,18 @@ const consoleFormat = winston.format.combine(
 const logger = winston.createLogger({
   levels: customLevels,
   transports: [
-    new winston.transports.File({
-      level: "error",
-      filename: resolve(logFolderPath, "error.log"),
-      maxsize: maxLogSize,
-      format: fileFormat,
-    }),
-    new winston.transports.File({
-      level: "success",
-      filename: resolve(logFolderPath, "combined.log"),
-      maxsize: maxLogSize,
-      format: fileFormat,
-    }),
+    // new winston.transports.File({
+    //   level: "error",
+    //   filename: resolve(logFolderPath, "error.log"),
+    //   maxsize: maxLogSize,
+    //   format: fileFormat,
+    // }),
+    // new winston.transports.File({
+    //   level: "success",
+    //   filename: resolve(logFolderPath, "combined.log"),
+    //   maxsize: maxLogSize,
+    //   format: fileFormat,
+    // }),
     new winston.transports.Console({
       level: "success",
       format: consoleFormat,
