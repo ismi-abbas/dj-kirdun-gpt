@@ -1,18 +1,20 @@
 {
-  "name": "discord-auto-download",
+  "name": "dj-kirdun-discord",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy": "npm i pnpm && pnpm i",
-    "prod": "node index.js",
+    "deploy": "npm i -g pnpm && npm i -g pm2 && pnpm i",
+    "prod": "pm2 start ecosystem.config.js --env production",
     "dev": "nodemon index.js"
   },
   "engines": {
     "node": ">=16"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "gpt-4"
+  ],
+  "author": "ismi-abbas.dev",
   "license": "ISC",
   "dependencies": {
     "@discordjs/builders": "github:discordjs/builders",

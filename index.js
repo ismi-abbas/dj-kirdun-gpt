@@ -3,42 +3,12 @@ const { REST, Routes } = require("discord.js");
 const { Client, GatewayIntentBits } = require("discord.js");
 const logger = require("./logger.js");
 const makeRequest = require("./gpt.js");
+const commands = require("./command.js");
 
 const TOKEN = process.env.TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-const commands = [
-  {
-    name: "ping",
-    description: "Replies with Pong!",
-  },
-  {
-    name: "server",
-    description: "Give server name!",
-  },
-  {
-    name: "test",
-    description: "Testing the server!",
-  },
-  {
-    name: "ask",
-    description: "Ask the GPT-4!",
-    options: [
-      {
-        name: "input",
-        description: "Input to the GPT-4",
-        type: 3,
-        required: true,
-      },
-    ],
-  },
-  {
-    name: "clear",
-    description: "Clear the chat!",
-  },
-];
 
 if (!TOKEN) {
   logger.error("TOKEN is not defined in .env file");
@@ -50,7 +20,7 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
     logger.info("Started refreshing application (/) commands.");
 
     if (!CLIENT_ID) {
-      logger.success("CLIENT_ID is not defined in .env file");
+      logger.error("CLIENT_ID is not defined in .env file");
     }
 
     await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
@@ -75,7 +45,7 @@ client.on("interactionCreate", async (interaction) => {
     try {
       await interaction.channel.bulkDelete(100);
     } catch (error) {
-      logger.error(JSON.stringify(error));
+      logger.error(error);
     }
   }
 
@@ -97,21 +67,19 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (commandName === "ask") {
+    const user = interaction.user;
     const prompt = interaction.options.getString("input");
     try {
-      await interaction.deferReply("Asking GPT-4...");
+      await interaction.deferReply();
       const response = await makeRequest(prompt);
 
-      logger.info({
-        message: "GPT-4 responded",
-        response,
-      });
+      logger.info(`Prompt: ${prompt}\n\nResponse: ${response}`);
 
       interaction.editReply({
         content: `Prompt: ${prompt}\n\nResponse: ${response}`,
       });
     } catch (error) {
-      logger.error(error);
+      logger.info(error);
     }
   }
 });

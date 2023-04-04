@@ -17,9 +17,9 @@ const makeRequest = async (prompt) => {
 
   try {
     const response = await openai.createChatCompletion({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: initial_prompt,
-      temperature: 0,
+      temperature: 0.5,
       max_tokens: 60,
       top_p: 1.0,
       frequency_penalty: 0.5,
@@ -29,11 +29,10 @@ const makeRequest = async (prompt) => {
 
     const answer = response.data.choices[0].message.content;
     initial_prompt.push({ role: "system", content: answer });
-    logger.success(answer);
 
     return answer;
   } catch (error) {
-    logger.error(error.message);
+    logger.error(error);
   }
 };
 
