@@ -20,7 +20,7 @@ const makeRequest = async (prompt) => {
       model: "gpt-3.5-turbo",
       messages: initial_prompt,
       temperature: 0.5,
-      max_tokens: 60,
+      max_tokens: 4000,
       top_p: 1.0,
       frequency_penalty: 0.5,
       presence_penalty: 0.0,
