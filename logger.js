@@ -22,7 +22,7 @@ const timestampFormat = winston.format.timestamp({
 });
 
 const simpleOutputFormat = winston.format.printf((log) => {
-  return `${log.timestamp}\t${log.level}: ${log.message}`;
+  return `[${log.timestamp}]\t${log.level}: ${log.message}`;
 });
 
 const coloredOutputFormat = winston.format.printf((log) => {

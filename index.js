@@ -2,6 +2,7 @@ require("dotenv").config();
 const { REST, Routes } = require("discord.js");
 const { Client, GatewayIntentBits } = require("discord.js");
 const logger = require("./logger.js");
+const makeRequest = require("./gpt.js");
 
 const TOKEN = process.env.TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -74,7 +75,14 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (interaction.commandName === "ask") {
-    await interaction.reply("Ask the GPT-4!");
+    const response = await makeRequest();
+    if (await makeRequest()) {
+      logger.info("GPT-4 is working!");
+      await interaction.reply(response);
+    } else {
+      logger.error("GPT-4 is not working!");
+      await interaction.reply("GPT-4 is not working!");
+    }
   }
 });
 
