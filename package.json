@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deploy": "npm i -g pnpm && npm i -g pm2 && pnpm i",
-    "prod": "pm2 start ecosystem.config.js --env production",
+    "prod": "pm2 start ecosystem.config.js --env prod",
     "dev": "nodemon index.js"
   },
   "engines": {
