@@ -25,6 +25,18 @@ const commands = [
   {
     name: "ask",
     description: "Ask the GPT-4!",
+    options: [
+      {
+        name: "input",
+        description: "Input to the GPT-4",
+        type: 3,
+        required: true,
+      },
+    ],
+  },
+  {
+    name: "clear",
+    description: "Clear the chat!",
   },
 ];
 
@@ -45,7 +57,7 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
 
     logger.success("Successfully reloaded application (/) commands.");
   } catch (error) {
-    logger.error(error);
+    logger.error("Failed to reload application (/) commands.");
   }
 })();
 
@@ -57,11 +69,21 @@ client.on("interactionCreate", async (interaction) => {
   logger.info(`Interaction received: ${interaction}`);
   if (!interaction.isChatInputCommand()) return;
 
-  if (interaction.commandName === "ping") {
+  const { commandName } = interaction;
+
+  if (commandName === "clear") {
+    try {
+      await interaction.channel.bulkDelete(100);
+    } catch (error) {
+      logger.error(JSON.stringify(error));
+    }
+  }
+
+  if (commandName === "ping") {
     await interaction.reply("pong!");
   }
 
-  if (interaction.commandName === "server") {
+  if (commandName === "server") {
     await interaction.reply(
       `Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`
     );
@@ -70,18 +92,26 @@ client.on("interactionCreate", async (interaction) => {
     );
   }
 
-  if (interaction.commandName === "test") {
+  if (commandName === "test") {
     await interaction.reply("Testing the server!");
   }
 
-  if (interaction.commandName === "ask") {
-    const response = await makeRequest();
-    if (await makeRequest()) {
-      logger.info("GPT-4 is working!");
-      await interaction.reply(response);
-    } else {
-      logger.error("GPT-4 is not working!");
-      await interaction.reply("GPT-4 is not working!");
+  if (commandName === "ask") {
+    const prompt = interaction.options.getString("input");
+    try {
+      await interaction.deferReply("Asking GPT-4...");
+      const response = await makeRequest(prompt);
+
+      logger.info({
+        message: "GPT-4 responded",
+        response,
+      });
+
+      interaction.editReply({
+        content: `Prompt: ${prompt}\n\nResponse: ${response}`,
+      });
+    } catch (error) {
+      logger.error(error);
     }
   }
 });

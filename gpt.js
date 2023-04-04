@@ -2,15 +2,18 @@ const { Configuration, OpenAIApi } = require("openai");
 const logger = require("./logger.js");
 
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: process.env.OPENAI_AI_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
 const makeRequest = async (prompt) => {
   let initial_prompt = [
     { role: "system", content: "I am a helpful assistant." },
-    { role: "user", content: "Who are you" },
   ];
+
+  if (prompt) {
+    initial_prompt.push({ role: "user", content: prompt });
+  }
 
   try {
     const response = await openai.createChatCompletion({
@@ -24,13 +27,13 @@ const makeRequest = async (prompt) => {
       stop: ["You:"],
     });
 
-    let answer = response.data.choices[0].message.content;
-    logger.info(answer);
-    // initial_prompt.push(answer);
+    const answer = response.data.choices[0].message.content;
+    initial_prompt.push({ role: "system", content: answer });
+    logger.success(answer);
 
     return answer;
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
   }
 };
 

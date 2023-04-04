@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  '@discordjs/builders':
+    specifier: github:discordjs/builders
+    version: github.com/discordjs/builders/f0c1fe740eac960f8fe4fc3f54cc8bca40247a23
   chalk:
     specifier: 4.1.2
     version: 4.1.2
@@ -92,6 +95,11 @@ packages:
   /@sapphire/snowflake@3.4.0:
     resolution: {integrity: sha512-zZxymtVO6zeXVMPds+6d7gv/OfnCc25M1Z+7ZLB0oPmeMTPeRWVPQSS16oDJy5ZsyCOLj7M6mbZml5gWXcVRNw==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
+    dev: false
+
+  /@sindresorhus/is@4.6.0:
+    resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
+    engines: {node: '>=10'}
     dev: false
 
   /@tokenizer/token@0.3.0:
@@ -202,6 +210,11 @@ packages:
   /delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
+    dev: false
+
+  /discord-api-types@0.26.1:
+    resolution: {integrity: sha512-T5PdMQ+Y1MEECYMV5wmyi9VEYPagEDEi4S0amgsszpWY0VB9JJ/hEvM6BgLhbdnKky4gfmZEXtEEtojN8ZKJQQ==}
+    engines: {node: '>=12'}
     dev: false
 
   /discord-api-types@0.37.37:
@@ -493,4 +506,23 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: false
+
+  /zod@3.21.4:
+    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false
+
+  github.com/discordjs/builders/f0c1fe740eac960f8fe4fc3f54cc8bca40247a23:
+    resolution: {tarball: https://codeload.github.com/discordjs/builders/tar.gz/f0c1fe740eac960f8fe4fc3f54cc8bca40247a23}
+    name: '@discordjs/builders'
+    version: 0.11.0
+    engines: {node: '>=16.0.0', npm: '>=7.0.0'}
+    prepare: true
+    requiresBuild: true
+    dependencies:
+      '@sindresorhus/is': 4.6.0
+      discord-api-types: 0.26.1
+      ts-mixer: 6.0.3
+      tslib: 2.5.0
+      zod: 3.21.4
     dev: false

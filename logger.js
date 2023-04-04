@@ -75,6 +75,9 @@ const logger = winston.createLogger({
       filename: resolve(logFolderPath, "exceptions.log"),
       format: fileFormat,
     }),
+    new winston.transports.Console({
+      format: consoleFormat,
+    }),
   ],
 });
 
