@@ -24,10 +24,10 @@ export const makeRequest = async (prompt: string, type: string) => {
   }
   try {
     const response = await openai.createChatCompletion({
-      model: 'gpt-4',
+      model: 'gpt-3.5-turbo',
       messages: initial_prompt as [],
       temperature: 0.5,
-      max_tokens: 1000,
+      max_tokens: 4096,
       top_p: 1.0,
       frequency_penalty: 0.5,
       presence_penalty: 0.0,
