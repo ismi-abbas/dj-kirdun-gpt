@@ -24,6 +24,10 @@ const commands = [
     ]
   },
   {
+    name: 'clear_gpt',
+    description: 'Clear the GPT-4 prompt!'
+  },
+  {
     name: 'clear',
     description: 'Clear the chat!'
   },

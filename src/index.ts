@@ -11,7 +11,7 @@ import {
   EmbedBuilder
 } from 'discord.js'
 import logger from './logger.js'
-import { makeRequest } from './gpt.js'
+import { makeRequest, clearPrompt } from './gpt.js'
 import commands from './command.js'
 import * as dotenv from 'dotenv'
 dotenv.config()
@@ -89,7 +89,7 @@ client.on('createMessage', async (message) => {
       iconURL: 'https://i.imgur.com/AfFp7pu.png'
     })
 
-  message.channel.send({
+  await message.channel.send({
     embeds: [embed]
   })
 })
@@ -130,8 +130,15 @@ client.on('interactionCreate', async (interaction) => {
   if (interaction.commandName === 'ask') {
     const prompt = interaction.options.getString('input')
     try {
-      await interaction.reply('Fetching data from GPT-4...')
+      await interaction.deferReply()
       const response = await makeRequest(prompt, 'ask')
+
+      if (response.length >= 2000) {
+        await interaction.editReply({
+          content: 'Response is too long to be displayed!'
+        })
+        return
+      }
 
       const responseFormat = `${bold('Prompt:')} ${prompt}\n\n${bold(
         'Response:'
@@ -139,6 +146,18 @@ client.on('interactionCreate', async (interaction) => {
 
       await interaction.editReply({
         content: blockQuote(responseFormat)
+      })
+    } catch (error) {
+      logger.error(error)
+    }
+  }
+
+  if (interaction.commandName === 'clear_gpt') {
+    try {
+      await clearPrompt()
+      await interaction.reply({
+        content: 'Cleared the prompt!',
+        ephemeral: true
       })
     } catch (error) {
       logger.error(error)

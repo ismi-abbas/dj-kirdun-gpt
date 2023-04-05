@@ -24,14 +24,13 @@ export const makeRequest = async (prompt: string, type: string) => {
   }
   try {
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: `gpt-4`,
       messages: initial_prompt as [],
       temperature: 0.5,
       max_tokens: 4096,
       top_p: 1.0,
       frequency_penalty: 0.5,
-      presence_penalty: 0.0,
-      stop: ['You:']
+      presence_penalty: 0.0
     })
 
     const answer = response.data.choices[0].message.content
@@ -42,4 +41,8 @@ export const makeRequest = async (prompt: string, type: string) => {
   } catch (error) {
     logger.error(error)
   }
+}
+
+export const clearPrompt = async () => {
+  return initial_prompt.splice(1, initial_prompt.length - 1)
 }
