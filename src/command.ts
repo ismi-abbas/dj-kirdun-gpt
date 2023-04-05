@@ -48,6 +48,10 @@ const commands = [
   {
     name: 'select',
     description: 'Select a language for GPT-4'
+  },
+  {
+    name: 'quote',
+    description: 'Get a random quote'
   }
 ]
 

@@ -59,7 +59,10 @@ client.on('interactionCreate', async (interaction) => {
   if (commandName === 'clear') {
     try {
       await interaction.channel.bulkDelete(100)
-      await interaction.reply('Cleared the channel!')
+      await interaction.reply({
+        content: 'Cleared the channel!',
+        ephemeral: true
+      })
     } catch (error) {
       logger.error(error)
     }
@@ -156,7 +159,7 @@ client.on('interactionCreate', async (interaction) => {
       })
 
     const answer = await makeRequest(prompt)
-    embed.setDescription(quote)
+    embed.setDescription(answer)
     await interaction.reply({ embeds: [embed] })
   }
 
@@ -170,6 +173,10 @@ client.on('interactionCreate', async (interaction) => {
       content: `Name: ${answer.name}\nUsername: ${answer.login}\nBio: ${answer.bio}\nFollowers: ${answer.followers}\nAvatar: ${answer.avatar_url}`
     })
   }
+})
+
+client.on('error', (error) => {
+  logger.error(error.message)
 })
 
 void client.login(TOKEN)
