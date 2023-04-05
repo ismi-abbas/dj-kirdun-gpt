@@ -7,7 +7,8 @@ import {
   blockQuote,
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle
+  ButtonStyle,
+  EmbedBuilder
 } from 'discord.js'
 import logger from './logger.js'
 import { makeRequest } from './gpt.js'
@@ -119,6 +120,44 @@ client.on('interactionCreate', async (interaction) => {
       content: 'Please select a language for GPT-4',
       components: [actionRow]
     })
+  }
+
+  if (commandName === 'quote') {
+    const prompt = 'Give me a motivational quote'
+    let quote: string = ''
+
+    const embed = new EmbedBuilder()
+      .setColor(0x0099ff)
+      .setTitle('Quotes of the day')
+      .setURL('https://discord.js.org/')
+      .setAuthor({
+        name: 'Some name',
+        iconURL: 'https://i.imgur.com/AfFp7pu.png',
+        url: 'https://discord.js.org'
+      })
+      .setDescription(quote)
+      .setThumbnail('https://i.imgur.com/AfFp7pu.png')
+      .addFields(
+        { name: 'Regular field title', value: 'Some value here' },
+        { name: '\u200B', value: '\u200B' },
+        { name: 'Inline field title', value: 'Some value here', inline: true },
+        { name: 'Inline field title', value: 'Some value here', inline: true }
+      )
+      .addFields({
+        name: 'Inline field title',
+        value: 'Some value here',
+        inline: true
+      })
+      .setImage('https://i.imgur.com/AfFp7pu.png')
+      .setTimestamp()
+      .setFooter({
+        text: 'Some footer text here',
+        iconURL: 'https://i.imgur.com/AfFp7pu.png'
+      })
+
+    const answer = await makeRequest(prompt)
+    embed.setDescription(quote)
+    await interaction.reply({ embeds: [embed] })
   }
 
   if (commandName === 'github') {

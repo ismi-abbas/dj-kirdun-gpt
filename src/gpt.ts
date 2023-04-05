@@ -1,6 +1,7 @@
 import { Configuration, OpenAIApi } from 'openai'
 import logger from './logger.js'
 import * as dotenv from 'dotenv'
+import { EmbedBuilder } from 'discord.js'
 dotenv.config()
 
 const configuration = new Configuration({
