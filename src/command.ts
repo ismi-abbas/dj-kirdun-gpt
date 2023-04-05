@@ -44,6 +44,10 @@ const commands = [
         required: false
       }
     ]
+  },
+  {
+    name: 'select',
+    description: 'Select a language for GPT-4'
   }
 ]
 

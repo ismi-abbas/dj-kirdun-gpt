@@ -4,7 +4,10 @@ import {
   Client,
   GatewayIntentBits,
   bold,
-  blockQuote
+  blockQuote,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle
 } from 'discord.js'
 import logger from './logger.js'
 import { makeRequest } from './gpt.js'
@@ -94,6 +97,28 @@ client.on('interactionCreate', async (interaction) => {
     } catch (error) {
       logger.error(error)
     }
+  }
+
+  if (commandName === 'select') {
+    const btn_sel_1 = new ButtonBuilder()
+      .setCustomId('english')
+      .setLabel('English')
+      .setStyle(ButtonStyle.Primary)
+
+    const btn_sel_2 = new ButtonBuilder()
+      .setCustomId('malay')
+      .setLabel('Malay')
+      .setStyle(ButtonStyle.Primary)
+
+    const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      btn_sel_1,
+      btn_sel_2
+    )
+
+    await interaction.reply({
+      content: 'Please select a language for GPT-4',
+      components: [actionRow]
+    })
   }
 
   if (commandName === 'github') {
