@@ -224,7 +224,8 @@ client.on('interactionCreate', async (interaction) => {
 client.on('error', (error) => {
   logger.error({
     path: error.name,
-    message: error.message
+    message: error.message,
+    stack: error.stack
   })
 })
 

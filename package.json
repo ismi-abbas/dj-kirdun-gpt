@@ -5,9 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node dist/index.js",
     "deploy": "npm i -g pnpm && npm i -g pm2 && pnpm i",
-    "prod": "pm2 start index.js",
-    "dev": "nodemon index.js",
+    "prod": "pm2 start dist/index.js",
+    "dev": "nodemon dist/index.js",
     "lint": "eslint --fix ./src --ext .ts",
     "build": "tsc"
   },

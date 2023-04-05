@@ -27,7 +27,7 @@ export const makeRequest = async (prompt: string, type: string) => {
       model: 'gpt-4',
       messages: initial_prompt as [],
       temperature: 0.5,
-      max_tokens: 100,
+      max_tokens: 1000,
       top_p: 1.0,
       frequency_penalty: 0.5,
       presence_penalty: 0.0,
