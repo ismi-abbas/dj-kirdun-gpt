@@ -19,7 +19,13 @@ dotenv.config()
 const TOKEN = process.env.TOKEN
 const CLIENT_ID = process.env.CLIENT_ID
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] })
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessages
+  ]
+})
 
 if (TOKEN === undefined) {
   logger.error('TOKEN is not defined in .env file')
@@ -50,13 +56,49 @@ client.on('ready', () => {
   logger.info(`Logged in as ${client.user.tag}!`)
 })
 
+client.on('createMessage', async (message) => {
+  logger.info(`Message received: ${message}`)
+  if (message.author.bot) return
+
+  const embed = new EmbedBuilder()
+    .setColor(0x0099ff)
+    .setTitle('Quotes of the day')
+    .setURL('https://discord.js.org/')
+    .setAuthor({
+      name: 'Some name',
+      iconURL: 'https://i.imgur.com/AfFp7pu.png',
+      url: 'https://discord.js.org'
+    })
+    .setDescription('Test')
+    .setThumbnail('https://i.imgur.com/AfFp7pu.png')
+    .addFields(
+      { name: 'Regular field title', value: 'Some value here' },
+      { name: '\u200B', value: '\u200B' },
+      { name: 'Inline field title', value: 'Some value here', inline: true },
+      { name: 'Inline field title', value: 'Some value here', inline: true }
+    )
+    .addFields({
+      name: 'Inline field title',
+      value: 'Some value here',
+      inline: true
+    })
+    .setImage('https://i.imgur.com/AfFp7pu.png')
+    .setTimestamp()
+    .setFooter({
+      text: 'Some footer text here',
+      iconURL: 'https://i.imgur.com/AfFp7pu.png'
+    })
+
+  message.channel.send({
+    embeds: [embed]
+  })
+})
+
 client.on('interactionCreate', async (interaction) => {
   logger.info(`Interaction received: ${interaction}`)
   if (!interaction.isChatInputCommand()) return
 
-  const { commandName } = interaction
-
-  if (commandName === 'clear') {
+  if (interaction.commandName === 'clear') {
     try {
       await interaction.channel.bulkDelete(100)
       await interaction.reply({
@@ -68,28 +110,28 @@ client.on('interactionCreate', async (interaction) => {
     }
   }
 
-  if (commandName === 'ping') {
+  if (interaction.commandName === 'ping') {
     await interaction.reply('pong!')
   }
 
-  if (commandName === 'server') {
-    await interaction.reply(
-      `Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`
-    )
+  if (interaction.commandName === 'server') {
     logger.info(
       `Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`
     )
+    await interaction.reply(
+      `Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`
+    )
   }
 
-  if (commandName === 'test') {
-    await interaction.reply('Testing the server!')
+  if (interaction.commandName === 'test') {
+    await interaction.reply({ content: 'Testing the server!' })
   }
 
-  if (commandName === 'ask') {
+  if (interaction.commandName === 'ask') {
     const prompt = interaction.options.getString('input')
     try {
       await interaction.reply('Fetching data from GPT-4...')
-      const response = await makeRequest(prompt)
+      const response = await makeRequest(prompt, 'ask')
 
       const responseFormat = `${bold('Prompt:')} ${prompt}\n\n${bold(
         'Response:'
@@ -103,7 +145,7 @@ client.on('interactionCreate', async (interaction) => {
     }
   }
 
-  if (commandName === 'select') {
+  if (interaction.commandName === 'select') {
     const btn_sel_1 = new ButtonBuilder()
       .setCustomId('english')
       .setLabel('English')
@@ -125,7 +167,7 @@ client.on('interactionCreate', async (interaction) => {
     })
   }
 
-  if (commandName === 'quote') {
+  if (interaction.commandName === 'quote') {
     const prompt = 'Give me a motivational quote'
     let quote: string = ''
 
@@ -157,13 +199,17 @@ client.on('interactionCreate', async (interaction) => {
         text: 'Some footer text here',
         iconURL: 'https://i.imgur.com/AfFp7pu.png'
       })
-
-    const answer = await makeRequest(prompt)
-    embed.setDescription(answer)
-    await interaction.reply({ embeds: [embed] })
+    try {
+      const answer = await makeRequest(prompt, 'quote')
+      // embed.setDescription(answer)
+      await interaction.channel.send({ embeds: [embed] })
+    } catch (error) {
+      console.log(error)
+      logger.error(error)
+    }
   }
 
-  if (commandName === 'github') {
+  if (interaction.commandName === 'github') {
     const username = interaction.options.getString('username')
     await interaction.reply('Fetching data from github...')
     const data = await fetch(`https://api.github.com/users/${username}`)
@@ -176,7 +222,10 @@ client.on('interactionCreate', async (interaction) => {
 })
 
 client.on('error', (error) => {
-  logger.error(error.message)
+  logger.error({
+    path: error.name,
+    message: error.message
+  })
 })
 
 void client.login(TOKEN)

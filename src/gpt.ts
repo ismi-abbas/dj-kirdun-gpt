@@ -1,7 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai'
 import logger from './logger.js'
 import * as dotenv from 'dotenv'
-import { EmbedBuilder } from 'discord.js'
 dotenv.config()
 
 const configuration = new Configuration({
@@ -15,11 +14,14 @@ const initial_prompt = [
   { role: 'system', content: "You're a helpful assistant" }
 ]
 
-export const makeRequest = async (prompt: string) => {
+export const makeRequest = async (prompt: string, type: string) => {
   if (prompt) {
     initial_prompt.push({ role: 'user', content: prompt })
   }
 
+  if (type === 'quote') {
+    initial_prompt[0].content = `You're a very good novelist`
+  }
   try {
     const response = await openai.createChatCompletion({
       model: 'gpt-4',

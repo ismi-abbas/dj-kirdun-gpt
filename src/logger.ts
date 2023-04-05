@@ -79,7 +79,10 @@ const logger = createLogger({
 })
 
 const Logger = {
-  error: (message: string) => logger.error(message),
+  error: (message: string | object) => {
+    if (typeof message === 'object') message = JSON.stringify(message)
+    logger.error(message)
+  },
   warning: (message: string) => logger.warning(message),
   info: (message: string) => logger.info(message),
   success: (message: string) => logger.log('success', message)
